@@ -2,6 +2,9 @@ package com.cadastro.usuarios.core.service;
 
 import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 public interface UsuarioService {
@@ -14,4 +17,8 @@ public interface UsuarioService {
     UsuarioResponseDTO update(Long id, UsuarioRequestDTO dto);
 
     void delete(Long id);
+
+    boolean validarLogin(String nome, String senha);
+
+    UsuarioResponseDTO findByName(String nome);
 }

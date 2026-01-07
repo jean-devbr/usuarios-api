@@ -72,4 +72,18 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         repository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean validarLogin(String nome, String senha) {
+        return repository.existsByNomeAndSenha(nome, senha);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UsuarioResponseDTO findByName(String nome) {
+        return repository.findByNome(nome)
+                .map(mapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+    }
 }

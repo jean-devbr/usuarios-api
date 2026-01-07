@@ -109,7 +109,18 @@ A API fornece os seguintes endpoints para gerenciamento de usuários:
   - Parâmetro: `id` (Long)
   - Resposta: 204 No Content
 
+- **POST /usuarios/login** - Fazer login
+  - Corpo: `LoginDTO` (nome e senha obrigatórios)
+  - Resposta: 200 OK se autenticado, 400 Bad Request com mensagem de erro se inválido
+
 ### Exemplo de Requisição
+
+**Fazer login:**
+```bash
+curl -X POST http://localhost:8085/usuarios/login \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "João Silva", "senha": "senha123"}'
+```
 
 **Criar usuário:**
 ```bash

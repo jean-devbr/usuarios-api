@@ -1,7 +1,10 @@
 package com.cadastro.usuarios.core.controller;
 
+import com.cadastro.usuarios.core.dto.LoginRequestDTO;
+import com.cadastro.usuarios.core.dto.LoginResponseDTO;
 import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
+import com.cadastro.usuarios.core.infra.exceptions.BusinessException;
 import com.cadastro.usuarios.core.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +16,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     private final UsuarioService service;
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO dto) {
+        boolean autenticado = service.validarLogin(dto.nome(), dto.senha());
+
+        if (!autenticado) {
+            throw new BusinessException("Usuário ou senha inválidos");
+        }
+
+        UsuarioResponseDTO usuario = service.findByName(dto.nome());
+
+        LoginResponseDTO response = new LoginResponseDTO(
+                usuario.id(),
+                usuario.nome(),
+                "Login realizado com sucesso!"
+        );
+
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> create(@RequestBody @Valid UsuarioRequestDTO dto) {
