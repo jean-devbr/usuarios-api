@@ -31,3 +31,25 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Maven ###
+.mvn/
+
+### Logs ###
+*.log
+logs/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Application profiles ###
+application-*.yml
+application-*.properties
+
+### Temporary files ###
+*.tmp
+*.temp
+
+### Test ###
+test/
