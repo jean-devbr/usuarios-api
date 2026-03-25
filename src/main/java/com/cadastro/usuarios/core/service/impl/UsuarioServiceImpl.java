@@ -24,13 +24,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioResponseDTO create(UsuarioRequestDTO dto) {
-        if (repository.existsByNome(dto.nome())) {
-            throw new BusinessException("Já existe um usuário cadastrado com este nome.");
-        }
-
-        if (repository.existsBySenha(dto.senha())) {
-            throw new BusinessException("Esta senha já está em uso por outro usuário.");
-        }
+        validarNomeOuSenhaUnicos(dto.nome(), dto.senha(), null);
 
         var entidade = mapper.toEntity(dto);
         return mapper.toResponse(repository.save(entidade));
@@ -58,6 +52,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         var usuario = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
+        validarNomeOuSenhaUnicos(dto.nome(), dto.senha(), id);
+
         usuario.setNome(dto.nome());
         usuario.setSenha(dto.senha());
 
@@ -76,7 +72,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     public boolean validarLogin(String nome, String senha) {
-        return repository.existsByNomeAndSenha(nome, senha);
+        return repository.existsByNomeOrSenha(nome, senha);
     }
 
     @Override
@@ -103,5 +99,21 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.nome(),
                 "Login realizado com sucesso!"
         );
+    }
+
+    private void validarNomeOuSenhaUnicos(String nome, String senha, Long idAtual) {
+        boolean existe = existeNomeOuSenha(nome, senha, idAtual);
+
+        if (existe) {
+            throw new BusinessException("Nome ou senha já estão em uso.");
+        }
+    }
+
+    private boolean existeNomeOuSenha(String nome, String senha, Long idAtual) {
+        if (idAtual == null) {
+            return repository.existsByNomeOrSenha(nome, senha);
+        }
+
+        return repository.existsByNomeOrSenhaAndIdNot(nome, senha, idAtual);
     }
 }
