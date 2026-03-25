@@ -1,11 +1,9 @@
 package com.cadastro.usuarios.core.service;
 
-import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
-import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
-import com.cadastro.usuarios.core.dto.LoginRequestDTO;
-import com.cadastro.usuarios.core.dto.LoginResponseDTO;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.cadastro.usuarios.core.dto.cadastro.UsuarioRequestDTO;
+import com.cadastro.usuarios.core.dto.cadastro.UsuarioResponseDTO;
+import com.cadastro.usuarios.core.dto.login.LoginRequestDTO;
+import com.cadastro.usuarios.core.dto.login.LoginResponseDTO;
 
 import java.util.List;
 

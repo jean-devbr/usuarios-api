@@ -1,4 +1,4 @@
-package com.cadastro.usuarios.core.dto;
+package com.cadastro.usuarios.core.dto.cadastro;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

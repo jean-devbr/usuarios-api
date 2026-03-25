@@ -1,9 +1,9 @@
 package com.cadastro.usuarios.core.controller;
 
-import com.cadastro.usuarios.core.dto.LoginRequestDTO;
-import com.cadastro.usuarios.core.dto.LoginResponseDTO;
-import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
-import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
+import com.cadastro.usuarios.core.dto.login.LoginRequestDTO;
+import com.cadastro.usuarios.core.dto.login.LoginResponseDTO;
+import com.cadastro.usuarios.core.dto.cadastro.UsuarioRequestDTO;
+import com.cadastro.usuarios.core.dto.cadastro.UsuarioResponseDTO;
 import com.cadastro.usuarios.core.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
