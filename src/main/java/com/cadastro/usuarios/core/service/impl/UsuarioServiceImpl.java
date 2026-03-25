@@ -1,5 +1,7 @@
 package com.cadastro.usuarios.core.service.impl;
 
+import com.cadastro.usuarios.core.dto.LoginRequestDTO;
+import com.cadastro.usuarios.core.dto.LoginResponseDTO;
 import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
 import com.cadastro.usuarios.core.infra.exceptions.BusinessException;
@@ -22,12 +24,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioResponseDTO create(UsuarioRequestDTO dto) {
-        // 1. Valida se o nome já existe
         if (repository.existsByNome(dto.nome())) {
             throw new BusinessException("Já existe um usuário cadastrado com este nome.");
         }
 
-        // 2. Valida se a senha já existe (se você quiser que senhas também sejam únicas)
         if (repository.existsBySenha(dto.senha())) {
             throw new BusinessException("Esta senha já está em uso por outro usuário.");
         }
@@ -85,5 +85,23 @@ public class UsuarioServiceImpl implements UsuarioService {
         return repository.findByNome(nome)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public LoginResponseDTO login(LoginRequestDTO dto) {
+        boolean autenticado = validarLogin(dto.nome(), dto.senha());
+
+        if (!autenticado) {
+            throw new BusinessException("Usuário ou senha inválidos");
+        }
+
+        UsuarioResponseDTO usuario = findByName(dto.nome());
+
+        return new LoginResponseDTO(
+                usuario.id(),
+                usuario.nome(),
+                "Login realizado com sucesso!"
+        );
     }
 }

@@ -2,6 +2,8 @@ package com.cadastro.usuarios.core.service;
 
 import com.cadastro.usuarios.core.dto.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.UsuarioResponseDTO;
+import com.cadastro.usuarios.core.dto.LoginRequestDTO;
+import com.cadastro.usuarios.core.dto.LoginResponseDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -21,4 +23,6 @@ public interface UsuarioService {
     boolean validarLogin(String nome, String senha);
 
     UsuarioResponseDTO findByName(String nome);
+
+    LoginResponseDTO login(LoginRequestDTO dto);
 }
