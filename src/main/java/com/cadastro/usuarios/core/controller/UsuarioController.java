@@ -24,9 +24,6 @@ public class UsuarioController {
 
     private final UsuarioService service;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
         return ResponseEntity.ok(service.login(dto));
