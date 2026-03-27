@@ -10,8 +10,14 @@ import com.cadastro.usuarios.core.mapper.UsuarioMapper;
 import com.cadastro.usuarios.core.repository.UsuarioRepository;
 import com.cadastro.usuarios.core.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -20,13 +26,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
     private final UsuarioMapper mapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtEncoder jwtEncoder;
 
     @Override
     @Transactional
     public UsuarioResponseDTO create(UsuarioRequestDTO dto) {
-        validarNomeOuSenhaUnicos(dto.nome(), dto.senha(), null);
+        validarNomeUnicos(dto.nome(), null);
 
         var entidade = mapper.toEntity(dto);
+        entidade.setSenha(passwordEncoder.encode(dto.senha()));
         return mapper.toResponse(repository.save(entidade));
     }
 
@@ -52,10 +61,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         var usuario = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-        validarNomeOuSenhaUnicos(dto.nome(), dto.senha(), id);
+        validarNomeUnicos(dto.nome(), id);
 
         usuario.setNome(dto.nome());
-        usuario.setSenha(dto.senha());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
 
         return mapper.toResponse(repository.save(usuario));
     }
@@ -72,7 +81,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     public boolean validarLogin(String nome, String senha) {
-        return repository.existsByNomeOrSenha(nome, senha);
+        var usuario = repository.findByNome(nome).orElse(null);
+        if (usuario == null) {
+            return false;
+        }
+        return passwordEncoder.matches(senha, usuario.getSenha());
     }
 
     @Override
@@ -86,34 +99,42 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO dto) {
-        boolean autenticado = validarLogin(dto.nome(), dto.senha());
+        var usuario = repository.findByNome(dto.nome()).orElseThrow(()
+                -> new BusinessException("Usuário ou senha não encontrado"));
 
-        if (!autenticado) {
-            throw new BusinessException("Usuário ou senha inválidos");
+        if (!passwordEncoder.matches(dto.senha(), usuario.getSenha())) {
+            throw new BusinessException("Usuário ou Senha inválido.");
         }
 
-        UsuarioResponseDTO usuario = findByName(dto.nome());
+        var now = Instant.now();
+        var expirenIn = 300L;
+
+        var claims = JwtClaimsSet.builder()
+                .issuer("mybackend")
+                .subject(usuario.getId().toString())
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(expirenIn))
+                .build();
+
+        var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
         return new LoginResponseDTO(
-                usuario.id(),
-                usuario.nome(),
-                "Login realizado com sucesso!"
+                usuario.getId(),
+                usuario.getNome(),
+                "Login realizado com sucesso!",
+                jwtValue
         );
     }
 
-    private void validarNomeOuSenhaUnicos(String nome, String senha, Long idAtual) {
-        boolean existe = existeNomeOuSenha(nome, senha, idAtual);
+
+    private void validarNomeUnicos(String nome, Long idAtual) {
+        boolean existe = (idAtual == null)
+                ? repository.existsByNome(nome)
+                : repository.existsByNomeAndIdNot(nome, idAtual);
 
         if (existe) {
-            throw new BusinessException("Nome ou senha já estão em uso.");
+            throw new BusinessException("Nome já esta em uso.");
         }
     }
 
-    private boolean existeNomeOuSenha(String nome, String senha, Long idAtual) {
-        if (idAtual == null) {
-            return repository.existsByNomeOrSenha(nome, senha);
-        }
-
-        return repository.existsByNomeOrSenhaAndIdNot(nome, senha, idAtual);
-    }
 }

@@ -1,4 +1,4 @@
-package com.cadastro.usuarios.core.model;
+package com.cadastro.usuarios.core.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,15 +6,15 @@ import lombok.Data;
 @Entity
 @Table(name = "usuarios")
 @Data
-public class Usuario {
+public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String nome;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String senha;
 }

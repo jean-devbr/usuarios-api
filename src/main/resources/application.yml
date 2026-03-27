@@ -1,6 +1,20 @@
 server:
   port: 8085
 
+api:
+  key: changeme-123
+
+jwt:
+  public:
+    key: classpath:app.pub
+  private:
+    key: classpath:app.key
+
+springdoc:
+  swagger-ui:
+    persistAuthorization: false
+
+
 spring:
   application:
     name: usuarios-api

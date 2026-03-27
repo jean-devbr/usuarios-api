@@ -6,9 +6,13 @@ import com.cadastro.usuarios.core.dto.cadastro.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.cadastro.UsuarioResponseDTO;
 import com.cadastro.usuarios.core.service.UsuarioService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -19,6 +23,8 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioService service;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @PostMapping("/login")

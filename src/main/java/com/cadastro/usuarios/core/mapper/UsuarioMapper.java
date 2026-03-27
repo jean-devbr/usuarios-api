@@ -2,7 +2,7 @@ package com.cadastro.usuarios.core.mapper;
 
 import com.cadastro.usuarios.core.dto.cadastro.UsuarioRequestDTO;
 import com.cadastro.usuarios.core.dto.cadastro.UsuarioResponseDTO;
-import com.cadastro.usuarios.core.model.Usuario;
+import com.cadastro.usuarios.core.entity.UsuarioEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface UsuarioMapper {
 
     @Mapping(target = "id", ignore = true)
-    Usuario toEntity(UsuarioRequestDTO request);
+    UsuarioEntity toEntity(UsuarioRequestDTO request);
 
-    UsuarioResponseDTO toResponse(Usuario usuario);
+    UsuarioResponseDTO toResponse(UsuarioEntity usuarioEntity);
 }
