@@ -1,6 +1,6 @@
-package com.cadastro.usuarios.core.infra.config;
+package com.cadastro.usuarios.infra.config;
 
-import com.cadastro.usuarios.core.infra.security.ApiKeyAuthFilter;
+import com.cadastro.usuarios.infra.security.ApiKeyAuthFilter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;

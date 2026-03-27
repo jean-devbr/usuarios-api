@@ -1,4 +1,4 @@
-package com.cadastro.usuarios.core.infra.security;
+package com.cadastro.usuarios.infra.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

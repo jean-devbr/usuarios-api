@@ -1,4 +1,4 @@
-package com.cadastro.usuarios.core.infra.config;
+package com.cadastro.usuarios.infra.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

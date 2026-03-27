@@ -1,4 +1,4 @@
-package com.cadastro.usuarios.core.infra.exceptions;
+package com.cadastro.usuarios.infra.exceptions;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
