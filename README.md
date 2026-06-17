@@ -9,10 +9,11 @@ Uma API REST para cadastro e gerenciamento de usuários, desenvolvida com Spring
 - **Spring Data JPA**
 - **Spring Validation**
 - **Spring Security**
-- **H2 Database** (em memória)
+- **PostgreSQL**
 - **Lombok**
 - **MapStruct**
 - **Maven**
+- **Docker / Docker Compose**
 - **Springdoc OpenAPI (Swagger UI)**
 
 ## Estrutura do Projeto
@@ -78,12 +79,37 @@ src/
             └── UsuariosApiApplicationTests.java
 ```
 
+## Como Executar com Docker
+
+### Pre-requisitos
+
+- Docker
+- Docker Compose
+
+### Passos
+
+```bash
+docker-compose up --build
+```
+
+A aplicacao sobe em `http://localhost:8080`.
+
+O compose cria um container PostgreSQL com:
+
+```text
+Database: usuarios_db
+User: usuarios
+Password: usuarios123
+Host local: localhost:5433
+```
+
 ## Como Executar Localmente
 
 ### Pre-requisitos
 
 - Java 21 instalado
 - Maven instalado (ou use o wrapper `./mvnw`)
+- PostgreSQL rodando localmente
 
 ### Passos
 
@@ -91,7 +117,22 @@ src/
 ./mvnw spring-boot:run
 ```
 
-A aplicacao sobe em `http://localhost:8085`.
+A aplicacao sobe em `http://localhost:8080`.
+
+Por padrao a API tenta conectar em:
+
+```text
+jdbc:postgresql://localhost:5432/usuarios_db
+```
+
+Voce pode sobrescrever com variaveis de ambiente como `SPRING_DATASOURCE_URL`,
+`SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD`.
+
+Se quiser rodar a API localmente usando o PostgreSQL do Docker Compose, use:
+
+```bash
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/usuarios_db ./mvnw spring-boot:run
+```
 
 ## Autenticacao (API Key)
 
@@ -112,11 +153,10 @@ Rotas publicas:
 - `/swagger-ui/**`
 - `/v3/api-docs/**`
 - `/usuarios/login`
-- `/h2-console/**`
 
 ## Swagger UI
 
-- URL: `http://localhost:8085/swagger-ui/index.html`
+- URL: `http://localhost:8080/swagger-ui/index.html`
 - Clique em **Authorize** e informe a API key (`X-API-KEY`).
 
 ## Endpoints Principais
@@ -131,7 +171,7 @@ Rotas publicas:
 ### Exemplo (Criar usuario)
 
 ```bash
-curl -X POST http://localhost:8085/usuarios \
+curl -X POST http://localhost:8080/usuarios \
   -H "Content-Type: application/json" \
   -H "X-API-KEY: changeme-123" \
   -d '{"nome":"Joao","senha":"123"}'
@@ -140,17 +180,16 @@ curl -X POST http://localhost:8085/usuarios \
 ### Exemplo (Login)
 
 ```bash
-curl -X POST http://localhost:8085/usuarios/login \
+curl -X POST http://localhost:8080/usuarios/login \
   -H "Content-Type: application/json" \
   -d '{"nome":"Joao","senha":"123"}'
 ```
 
-## Banco de Dados H2
+## Banco de Dados PostgreSQL
 
-- Console: `http://localhost:8085/h2-console`
-- JDBC URL: `jdbc:h2:mem:testdb`
-- User: `sa`
-- Password: (vazio)
+- JDBC URL: `jdbc:postgresql://localhost:5432/usuarios_db`
+- User: `usuarios`
+- Password: `usuarios123`
 
 ## Testes
 

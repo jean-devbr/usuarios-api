@@ -52,4 +52,4 @@ application-*.properties
 *.temp
 
 ### Test ###
-test/
+/test/
